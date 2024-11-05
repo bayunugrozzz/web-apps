@@ -37,7 +37,6 @@ services:
     volumes:
       - ./frontend:/frontend
     network_mode: host
-    
 
 
 volumes:
