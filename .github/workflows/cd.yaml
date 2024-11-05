@@ -1,0 +1,88 @@
+name: CD Workflow - Delivery & Deployment (akhirnya)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  delivery:
+    name: Delivery - Push Image to Registry
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitHub Repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v5
+
+      - name: Push image to registry
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME}}/${{ vars.APP_NAME }}:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USERNAME}}/${{ vars.APP_NAME }}:latest
+
+
+  deployment:
+    name: Deployment - Deploy to Production Server 🚀
+    runs-on: self-hosted  
+    steps:
+      - name: Execute deployment command
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          APP_PATH: ${{ vars.APP_PATH }}
+          GIT_URL: ${{ secrets.GIT_URL }}
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ vars.DB_DBNAME }}
+          POSTGRES_HOST: ${{ secrets.DB_HOST }}
+          POSTGRES_PORT: ${{ secrets.DB_PORT }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_TAG: ${{ github.sha }}
+
+        with:
+          host: ${{ secrets.SSH_HOST_PROD }}
+          username: ${{ secrets.SSH_USERNAME_PROD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          envs: APP_PATH, GIT_URL, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST, POSTGRES_PORT, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, APP_NAME
+          script: |
+            sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+
+            if [[ -d "/home/ubuntu/${APP_PATH}" ]]; then 
+              cd /home/ubuntu/$APP_PATH
+              sudo docker compose down
+              git pull --rebase
+            else
+              ssh-keyscan github.com > ~/.ssh/known_hosts
+              git clone $GIT_URL /home/ubuntu/$APP_PATH
+              cd /home/ubuntu/$APP_PATH
+            fi
+
+            # Update environment variables in .env
+            echo "POSTGRES_USER=$POSTGRES_USER" > .env
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+            echo "POSTGRES_DB=$POSTGRES_DB" >> .env
+            echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
+            echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
+            echo "APP_IMAGE=${DOCKERHUB_USERNAME}/${APP_NAME}" >> .env
+
+            # Run app
+            sudo docker compose up --build --detach
+
+      - name: Hit Endpoint
+        run: |
+          sleep 10
+          curl -L -f ${{ secrets.PROD_URL }}
