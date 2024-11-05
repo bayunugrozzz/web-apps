@@ -32,4 +32,4 @@ jobs:
             
             - name: Run Testing
               run: |
-                python3 test_signup.py
+               python3 /home/runner/work/web-apps/web-apps/testing/test-signup.py
