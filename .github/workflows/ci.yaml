@@ -8,7 +8,7 @@ jobs:
     build-testing:
         runs-on: ubuntu-latest
         steps:
-            - name: checkout github repository
+            - name: Checkout GitHub Repository
               uses: actions/checkout@v2
             
             - name: Create .env file
@@ -17,19 +17,22 @@ jobs:
                 echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
                 echo "POSTGRES_DB=${{ vars.DB_NAME }}" >> .env
             
-            - name: Build and Running the Container
+            - name: Build and Run the Containers
               run: |
                 sudo docker compose up database backend frontend --build --detach
 
             - name: Hit Endpoint
               run: |
                 sleep 10
-                curl ${{ secrets.URL}}
+                curl ${{ secrets.URL }}
             
             - name: Install Requirements.txt
               run: |
                 python3 -m pip install -r testing/requirements.txt
             
+            - name: List files for debugging
+              run: ls -R ${{ github.workspace }}
+
             - name: Run Testing
               run: |
-                python3 test_signup.py
+                python3 ${{ github.workspace }}/testing/test_signup.py
