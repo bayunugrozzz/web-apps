@@ -103,10 +103,10 @@ Proses CI berjalan otomatis pada setiap pull request ke branch `main`. Ini melak
   - **build-testing**: Job ini menggunakan environment Ubuntu dan mengeksekusi langkah-langkah berikut:
     - **Checkout Repository**: Menarik repositori proyek dari GitHub.
     - **Create `.env` file**: Membuat file environment dengan informasi sensitif yang disimpan sebagai secrets di GitHub.
-    - **Build and Run Containers**: Membangun dan meluncurkan kontainer Docker (database, backend, frontend).
-    - **Hit Endpoint**: Memverifikasi bahwa endpoint aplikasi dapat dijangkau.
+    - **Build and Run Containers**: Membuild dan running kontainer Docker (database, backend, frontend).
+    - **Hit Endpoint**: Memverifikasi apakah endpoint aplikasi dapat dijangkau melalui curl.
     - **Install Dependencies**: Menginstal dependensi Python yang diperlukan untuk pengujian.
-    - **Run Tests**: Menjalankan skrip pengujian untuk memeriksa apakah aplikasi berfungsi dengan benar.
+    - **Run Tests**: Menjalankan skrip pengujian untuk memeriksa apakah aplikasi berfungsi dengan baik.
 
 #### CD (Continuous Deployment) - cd.yaml
 EN:  
@@ -127,13 +127,13 @@ Proses CD dipicu di branch `main` setelah tes CI berhasil dan mencakup jobs beri
 
 - **Jobs**:
   - **Delivery**:  
-    Membangun dan mengunggah image Docker ke Docker Hub.
+    Membuild dan mengupload image Docker ke Docker Hub.
     - **Login to Docker Hub**: Mengotentikasi ke Docker Hub menggunakan kredensial yang disimpan di secrets GitHub.
-    - **Push Image**: Membangun dan mengunggah image Docker untuk layanan backend ke Docker Hub dengan tag versi.
+    - **Push Image**: Membuild dan mengupload image Docker untuk layanan backend ke Docker Hub dengan tag.
   - **Deployment**:  
     Mendeploy kode yang diperbarui ke server produksi.
-    - **Execute Deployment**: Menggunakan SSH untuk terhubung ke server produksi dan Docker Compose untuk menarik perubahan terbaru dan me-restart kontainer.
-    - **Verify Deployment**: Memeriksa endpoint untuk memastikan bahwa deployment berhasil.
+    - **Execute Deployment**: Menggunakan SSH untuk terhubung ke server produksi dan Docker Compose untuk menarik perubahan terbaru dan melakukan restart kontainer.
+    - **Verify Deployment**: Memeriksa endpoint untuk memastikan bahwa proses deployment berhasil.
 
 ## GitHub Secrets and Vars Setup  
 EN:  
@@ -145,7 +145,7 @@ This setup enhances security and flexibility by protecting sensitive data and si
 
 ID:  
 Setelah membuat script CI/CD, saya mengonfigurasi **secrets** dan **vars** di GitHub untuk menyimpan informasi sensitif dengan aman.  
-- **Secrets** di GitHub adalah variabel lingkungan terenkripsi, seperti kredensial database, kredensial Docker Hub, dan kunci SSH, yang hanya dapat diakses selama proses workflow. Menggunakan secrets memastikan data sensitif tidak terpapar dalam kode.
+- **Secrets** di GitHub adalah variabel lingkungan terenkripsi, seperti kredensial database, kredensial Docker Hub, dan kunci SSH, yang hanya dapat diakses selama proses workflow. Menggunakan secrets memastikan data sensitif tidak tertulis dalam kode.
 - **Vars** adalah variabel lingkungan yang tidak sensitif (seperti path dan nama aplikasi) yang memudahkan proses workflow dan membuat script lebih fleksibel. Vars memungkinkan perubahan konfigurasi tanpa harus mengedit kode secara langsung.
 
 Pengaturan ini meningkatkan keamanan dan fleksibilitas dengan melindungi data sensitif serta mempermudah pembaruan konfigurasi.
@@ -157,7 +157,7 @@ EN:
 After setting up the CI/CD workflows, I created a new branch called `cicd` to test the pipeline. Once the tests were successful, I merged this branch into `main`. This process also includes checking Docker Hub for new images and validating the deployed application on EC2 to ensure it’s functioning as expected.
 
 ID:  
-Setelah mengatur workflow CI/CD, saya membuat branch baru bernama `cicd` untuk menguji pipeline. Setelah tes berhasil, saya melakukan merge branch ini ke `main`. Proses ini juga mencakup pemeriksaan Docker Hub untuk image baru dan validasi aplikasi yang telah di-deploy di EC2 untuk memastikan bahwa aplikasi berfungsi seperti yang diharapkan.
+Setelah mengatur workflow CI/CD, saya membuat branch baru bernama `cicd` untuk menguji pipeline. Setelah tes berhasil, saya melakukan merge branch ini ke `main`. Proses ini juga mencakup pemeriksaan Docker Hub untuk image baru dan validasi aplikasi yang telah di-deploy di EC2 untuk memastikan bahwa aplikasi berfungsi seperti yang diinginkan.
 
 ---
 
