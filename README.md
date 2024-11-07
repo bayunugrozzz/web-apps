@@ -1,5 +1,8 @@
 # Project Documentation - Website Deployment with CI/CD and Docker on EC2
 
+![academy.hsoub.com](images/cicdillustration.png)
+
+
 ## Project Background
 EN: 
 In this project, I am deploying a website to a production server on AWS EC2, where EC2 acts as the web server. This setup involves Docker services to containerize the application, allowing each component of the application (database, backend, frontend) to run in isolated environments. 
