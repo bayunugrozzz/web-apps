@@ -1,4 +1,4 @@
-# Project Documentation - Website Deployment with CI/CD and Docker on EC2
+# Project Documentation - Website Deployment with CI/CD and Docker on EC2 🚀🚀🚀
 
 ![academy.hsoub.com](images/cicdillustration.png)
 
@@ -83,7 +83,7 @@ Setiap layanan dalam Docker Compose dikonfigurasi untuk dimulai secara otomatis 
 
 ### 4. CI/CD Automation
 
-#### CI (Continuous Integration) - ci.yaml
+#### CI (Continuous Integration)🛠️🛠️🛠️🚀🚀🚀 - ci.yaml
 EN:  
 The CI process runs automatically on every pull request to the `main` branch. It performs various jobs to validate the application:
 
@@ -108,7 +108,7 @@ Proses CI berjalan otomatis pada setiap pull request ke branch `main`. Ini melak
     - **Install Dependencies**: Menginstal dependensi Python yang diperlukan untuk pengujian.
     - **Run Tests**: Menjalankan skrip pengujian untuk memeriksa apakah aplikasi berfungsi dengan baik.
 
-#### CD (Continuous Deployment) - cd.yaml
+#### CD (Continuous Deployment)🚢🚢🚢 - cd.yaml
 EN:  
 The CD process is triggered on the `main` branch after successful CI tests and includes the following jobs:
 
@@ -152,12 +152,46 @@ Pengaturan ini meningkatkan keamanan dan fleksibilitas dengan melindungi data se
 
 ---
 
-### 5. CI/CD Testing and Validation
+### 5. CI/CD Testing and Validation✅✅✅❌❌❌
 EN:  
 After setting up the CI/CD workflows, I created a new branch called `cicd` to test the pipeline. Once the tests were successful, I merged this branch into `main`. This process also includes checking Docker Hub for new images and validating the deployed application on EC2 to ensure it’s functioning as expected.
 
 ID:  
 Setelah mengatur workflow CI/CD, saya membuat branch baru bernama `cicd` untuk menguji pipeline. Setelah tes berhasil, saya melakukan merge branch ini ke `main`. Proses ini juga mencakup pemeriksaan Docker Hub untuk image baru dan validasi aplikasi yang telah di-deploy di EC2 untuk memastikan bahwa aplikasi berfungsi seperti yang diinginkan.
+
+Results of CI workflow:
+
+![](images/citest.png)
+
+
+
+
+
+Results of CD workflow:
+
+![](images/cdtest.png)
+
+
+
+
+
+Result of Self-hosted runner in EC2:
+
+![](images/dockerhub2.png)
+
+
+
+
+Repository Docker Hub:
+
+![](images/dockerhub1.png)
+
+
+
+
+docker service is running on EC2 server:
+
+![](images/Screenshot_from_2024-11-07_11-09-43.png)
 
 ---
 
@@ -167,6 +201,20 @@ Finally, I configured Nginx as a reverse proxy to route traffic to the appropria
 
 ID:  
 Terakhir, saya mengonfigurasi Nginx sebagai reverse proxy untuk merutekan lalu lintas ke layanan yang sesuai dan menggunakan Certbot untuk membuat sertifikat SSL gratis, meningkatkan keamanan aplikasi.
+
+NGINX setup script:
+
+![](images/dockerhub3.png)
+
+
+Connection Secure in Domain:
+
+![](images/dockerhub4.png)
+
+
+but the backend is still not running:💔😭😢
+
+![](images/weberror.png)
 
 ---
 
