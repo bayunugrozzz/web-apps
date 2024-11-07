@@ -1,0 +1,1 @@
+# untuk menyimpan gambar
